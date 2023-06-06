@@ -4,23 +4,33 @@ import pt.isec.pa.tinypac.model.ModelLog;
 
 import pt.isec.pa.tinypac.model.data.maze.item.*;
 import pt.isec.pa.tinypac.model.data.player.Pacman;
+import pt.isec.pa.tinypac.model.fsm.ghost.EGhostState;
+import pt.isec.pa.tinypac.model.fsm.maze.EMazeState;
+import pt.isec.pa.tinypac.model.fsm.maze.MazeContext;
 
 import java.io.*;
 import java.util.List;
 
 public class MazeManager {
-    private Maze _maze;
     private static final String LEVEL_FOLDER = "files/Levels/";
     private static final String LOG_FILE = "files/Log.txt";
     private int _numLevel;
+    private Maze _maze;
+    private MazeContext _fsm;
 
     public MazeManager() {
         this._maze = null;
+        this._fsm = new MazeContext(_maze);
         this._numLevel = 1;
-        //loadLevel();
     }
 
-    public void nextLevel() { _numLevel++; }
+    public void nextLevel() {
+        if (_numLevel == 20)
+            //TODO quando chega o ultimo nivel, acaba
+            //_fsmMaze.endGame();
+        _numLevel++;
+        this._maze = loadLevel();
+    }
 
     public Maze loadLevel() {
         try {
@@ -35,6 +45,7 @@ public class MazeManager {
         _maze = readFile(LEVEL);
         if(_maze != null)
             return _maze;
+
         ModelLog.getInstance().add("file not found");
         return null;
     }
@@ -125,7 +136,23 @@ public class MazeManager {
         }
     }
 
-    public char[][] getMazeBoard() { return _maze.getMaze(); }
-    public Maze getMaze() { return _maze; }
+    public void pauseGame() {
+
+    }
+
+    public void endGame() {
+
+    }
+
     public int getNumLevel() { return _numLevel; }
+    public Maze getMaze() { return _maze; }
+    public char[][] getMazeBoard() { return _maze.getMaze(); }
+    public EMazeState getMazeState() { return _fsm.getState(); }
+    public EGhostState getBlinkyState() { return _fsm.getBlinkyState(); }
+    public EGhostState getPinkyState() { return _fsm.getPinkyState(); }
+    public EGhostState getInkyState() { return _fsm.getInkyState(); }
+    public EGhostState getClydeState() { return _fsm.getClydeState(); }
+
+    //TODO: função reset do state
+    //public void setMazeState(EMazeState state) { _fsm.setState(state); }
 }

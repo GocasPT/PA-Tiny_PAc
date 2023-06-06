@@ -1,18 +1,17 @@
 package pt.isec.pa.tinypac;
 
-import pt.isec.pa.tinypac.gameengine.*;
-
-import pt.isec.pa.tinypac.model.fsm.maze.MazeContext;
-import pt.isec.pa.tinypac.ui.text.TinyPAcTextUI;
+import pt.isec.pa.tinypac.model.data.maze.MazeManager;
+import pt.isec.pa.tinypac.ui.text.TinyPAcTUI;
 
 import java.io.IOException;;
 
 public class TinyPAcMain {
     public static void main(String[] args) throws IOException {
-        MazeContext fsm = new MazeContext();
-        TinyPAcTextUI ui = new TinyPAcTextUI(fsm);
+        MazeManager model = new MazeManager();
+        TinyPAcTUI ui = new TinyPAcTUI(model);
+        //TinyPAcGUI ui = new TinyPAcGUI(fsm);
         //GameEngine gameEngine = new GameEngine();
-        ui.startGame();
+        ui.showMenu();
 
         //gameEngine.registerClient(ui);
 

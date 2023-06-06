@@ -4,8 +4,8 @@ import pt.isec.pa.tinypac.model.data.maze.Maze;
 import pt.isec.pa.tinypac.model.data.maze.MazeManager;
 
 public class PausedState extends MazeStateAdapter {
-    public PausedState(MazeContext context, MazeManager manager, Maze maze){
-        super(context, manager, maze);
+    public PausedState(MazeContext context, Maze maze){
+        super(context, maze);
     }
 
     @Override
