@@ -16,7 +16,7 @@ public class MazeContext implements IGameEngineEvolve {
     //private GameEngine _gameEngine;
 
     public MazeContext(Maze maze) {
-        //TODO check parametrus de entrada da criação do objeto
+        //TODO: check parametrus de entrada da criação do objeto
         this._state = EMazeState.INIT_GAME_STATE.createState(this, maze);
         this._fsmBlinky = new GhostContext(maze);
         this._fsmPinky = new GhostContext(maze);
@@ -24,7 +24,7 @@ public class MazeContext implements IGameEngineEvolve {
         this._fsmClyde = new GhostContext(maze);
     }
 
-    //TODO verificar este evolve (este é o evolve do gameEngine)
+    //TODO: verificar este evolve (este é o evolve do gameEngine)
     @Override
     public void evolve(IGameEngine gameEngine, long currentTime) {
 
@@ -32,7 +32,7 @@ public class MazeContext implements IGameEngineEvolve {
 
     void changeState(IMazeState newState) { _state = newState; }
 
-    //TODO check as funçoes de transições
+    //TODO: check as funçoes de transições
     public void pressKey() { _state.pressKey(); }
     public void evolve() { _state.evolve(); }
     public void pause() { _state.pause(); }

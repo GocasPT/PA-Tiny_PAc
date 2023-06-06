@@ -1,7 +1,6 @@
 package pt.isec.pa.tinypac.model.fsm.maze;
 
 import pt.isec.pa.tinypac.model.data.maze.Maze;
-import pt.isec.pa.tinypac.model.data.maze.MazeManager;
 
 public enum EMazeState {
     INIT_GAME_STATE, PLAYING_STATE, PAUSE_STATE, POWER_UP_STATE, END_GAME_STATE;

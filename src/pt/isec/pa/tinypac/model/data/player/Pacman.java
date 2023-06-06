@@ -8,7 +8,7 @@ import pt.isec.pa.tinypac.model.data.maze.Maze;
 public class Pacman extends MazeElement implements IMazeElement {
     public static final char SYMBOL = 'P';
     private int _vidas;
-    private KeyStroke _direction;
+    private EPacmanDirection _direction;
     private boolean _moving;
 
     public Pacman(Maze maze) {

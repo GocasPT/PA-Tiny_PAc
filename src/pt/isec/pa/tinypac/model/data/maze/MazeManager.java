@@ -26,7 +26,7 @@ public class MazeManager {
 
     public void nextLevel() {
         if (_numLevel == 20)
-            //TODO quando chega o ultimo nivel, acaba
+            //TODO: quando chega o ultimo nivel, acaba
             //_fsmMaze.endGame();
         _numLevel++;
         this._maze = loadLevel();
@@ -42,7 +42,7 @@ public class MazeManager {
         String levelFormat = String.format("%02d", _numLevel);
         String LEVEL = LEVEL_FOLDER+"Level"+levelFormat+".txt";
 
-        _maze = readFile(LEVEL);
+        _maze = readMazeFile(LEVEL);
         if(_maze != null)
             return _maze;
 
@@ -50,7 +50,7 @@ public class MazeManager {
         return null;
     }
 
-    private static Maze readFile(String filepath) {
+    private static Maze readMazeFile(String filepath) {
         Maze newMaze = null;
         FileReader fr = null;
 
@@ -136,12 +136,16 @@ public class MazeManager {
         }
     }
 
-    public void pauseGame() {
+    public void startGame() {
+        _fsm.pressKey();
+    }
 
+    public void pauseGame() {
+        _fsm.pause();
     }
 
     public void endGame() {
-
+        //_fsm.quit();
     }
 
     public int getNumLevel() { return _numLevel; }
