@@ -6,9 +6,7 @@ public class PacPill extends MazeElement implements IMazeElement {
     public static final char SYMBOL = 'O';
     public static final char RENDER = '⏺';
 
-    public PacPill(Maze maze) {
-        super(maze);
-    }
+    public PacPill(Maze maze) { super(maze); }
 
     @Override
     public char getSymbol() { return RENDER; }

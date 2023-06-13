@@ -1,17 +1,17 @@
 package pt.isec.pa.tinypac.model.fsm.ghost;
 
-import pt.isec.pa.tinypac.model.data.maze.Maze;
+import pt.isec.pa.tinypac.model.data.GameData;
 
 abstract class GhostStateAdapter implements IGhostState {
-    GhostContext _context;
-    Maze _maze;
+    private GhostContext _context;
+    private GameData _data;
 
-    protected GhostStateAdapter(GhostContext context, Maze maze) {
-        this._context = context;
-        this._maze = maze;
+    protected GhostStateAdapter(GhostContext context, GameData data) {
+        _context = context;
+        _data = data;
     };
 
-    protected void changeState(EGhostState newState) { _context.changeState(newState.createState(_context, _maze)); }
+    protected void changeState(EGhostState newState) { _context.changeState(newState.createState(_context, _data)); }
 
     @Override
     public void evolve() {}

@@ -1,10 +1,9 @@
 package pt.isec.pa.tinypac.model.fsm.ghost;
 
-import pt.isec.pa.tinypac.model.data.maze.Maze;
-import pt.isec.pa.tinypac.model.fsm.maze.EMazeState;
+import pt.isec.pa.tinypac.model.data.GameData;
 
 public class LockInCaseState extends GhostStateAdapter {
-    public LockInCaseState(GhostContext context, Maze maze) { super(context, maze); }
+    public LockInCaseState(GhostContext context, GameData data) { super(context, data); }
 
     @Override
     public void pause() {
