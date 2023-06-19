@@ -15,14 +15,12 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        TinyPAcTUI ui = new TinyPAcTUI();
+        /*TinyPAcTUI ui = new TinyPAcTUI();
         GameEngine gameEngine = new GameEngine();
         gameEngine.registerClient(gameManager);
         gameEngine.registerClient(ui);
-        //ui.showMenu();
-        ui.showMenu(gameEngine);
+        ui.showMenu(gameEngine);*/
 
-
-        //Application.launch(TinyPAcGUI.class, args);
+        Application.launch(TinyPAcGUI.class, args);
     }
 }

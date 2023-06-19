@@ -15,21 +15,18 @@ public class TinyPAcGUI extends Application {
     public void init() throws Exception {
         super.init();
         _gameManager = Main.gameManager;
-
         _gameEngine.registerClient(_gameManager);
-
-
-        //_gameEngine.start(200);
+        _gameEngine.start(200);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
-        newStageForTesting(stage, "TinyPac");
+        newStageForTesting(stage, "TinyPac - ISEC");
     }
 
     private void newStageForTesting(Stage stage, String title) {
         RootPane root = new RootPane(_gameManager);
-        Scene scene = new Scene(root, 800, 516);
+        Scene scene = new Scene(root, 900, 600);
         stage.setScene(scene);
         stage.setTitle(title);
         stage.resizableProperty().set(false);

@@ -7,6 +7,10 @@ public class Fruit extends MazeElement implements IMazeElement {
 
     public Fruit(Maze maze) { super(maze); }
 
+    public boolean withFruit() {
+        return false;
+    }
+
     @Override
     public char getSymbol() { return SYMBOL; }
 }

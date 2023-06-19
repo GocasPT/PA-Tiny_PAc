@@ -1,12 +1,13 @@
 package pt.isec.pa.tinypac.model.fsm.ghost;
 
 import pt.isec.pa.tinypac.model.data.GameData;
+import pt.isec.pa.tinypac.model.data.ghost.Ghost;
 
 abstract class GhostStateAdapter implements IGhostState {
-    private GhostContext _context;
-    private GameData _data;
+    protected GhostContext _context;
+    protected GameData _data;
 
-    protected GhostStateAdapter(GhostContext context, GameData data) {
+    protected GhostStateAdapter(GhostContext context, GameData data ) {
         _context = context;
         _data = data;
     };

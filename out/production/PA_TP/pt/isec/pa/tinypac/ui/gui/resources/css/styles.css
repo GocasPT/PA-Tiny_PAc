@@ -1,0 +1,16 @@
+.button {
+    -fx-font-family: "Courier New";
+    -fx-font-weight: bold;
+    -fx-font-size: 16;
+    -fx-min-width: 100;
+    -fx-background-color: rgb(249, 195, 40);
+    -fx-border-color: rgb(233, 35, 39);
+    -fx-text-fill: rgb(35, 31, 32);
+}
+
+.label {
+    -fx-font-family: "Arial";
+    -fx-font-weight: bold;
+    -fx-font-size: 16;
+    -fx-text-fill: White;
+}

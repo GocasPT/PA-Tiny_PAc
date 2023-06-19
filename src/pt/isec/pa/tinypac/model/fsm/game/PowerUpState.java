@@ -10,18 +10,19 @@ public class PowerUpState extends GameStateAdapter {
     }
 
     @Override
-    public void pressKey(KeyType key) {
-
-    }
-
-    @Override
-    public void pressKey(KeyCode key) {
-
-    }
+    public void pressKey() {}
 
     @Override
     public void pause() {
         changeState(EGameState.PAUSE_STATE);
+    }
+
+    @Override
+    public void evolve() {
+        _context.getGameData().movePacman();
+        //_context.getGameData().moveGhosts();
+
+        if (!_context.getOnPowerUp()) changeState(EGameState.PLAYING_STATE);
     }
 
     @Override

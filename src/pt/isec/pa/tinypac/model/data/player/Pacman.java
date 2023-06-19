@@ -1,19 +1,27 @@
 package pt.isec.pa.tinypac.model.data.player;
 
-import pt.isec.pa.tinypac.model.data.maze.item.IMazeElement;
-import pt.isec.pa.tinypac.model.data.maze.item.MazeElement;
+import pt.isec.pa.tinypac.model.data.EDirection;
+import pt.isec.pa.tinypac.model.data.ghost.Blinky;
+import pt.isec.pa.tinypac.model.data.ghost.Clyde;
+import pt.isec.pa.tinypac.model.data.ghost.Inky;
+import pt.isec.pa.tinypac.model.data.ghost.Pinky;
+import pt.isec.pa.tinypac.model.data.maze.item.*;
 import pt.isec.pa.tinypac.model.data.maze.Maze;
-import pt.isec.pa.tinypac.model.data.maze.item.Wall;
 
 public class Pacman extends MazeElement implements IMazeElement {
     public static final char SYMBOL = 'p';
     private int _vidas;
-    private EPacmanDirection _direction;
+    private EDirection _direction;
+    private IMazeElement _overElement;
+    private int _points;
+    private boolean _powerUpOn;
 
     public Pacman(Maze maze) {
         super(maze);
         _vidas = 3;
-        _direction = EPacmanDirection.NONE;
+        _direction = EDirection.NONE;
+        _points = 0;
+        _powerUpOn = false;
     }
 
     public int[] findHim() {
@@ -38,45 +46,85 @@ public class Pacman extends MazeElement implements IMazeElement {
         int y = coor[1];
 
         //TODO: atualizar a maze com o moviemto do pacman + colisiona muda a direction para null (?)
-        _maze.set(y, x, null);
+        _maze.set(y, x, _overElement);
+        _overElement = null;
+
         switch (_direction) {
             case UP -> {
-                if (_maze.get(y-1, x).getSymbol() == Wall.SYMBOL) {
-                    _direction = EPacmanDirection.NONE;
-                } else {
+                if (colision(y - 1, x))
                     y--;
-                }
             }
             case DOWN -> {
-                if (_maze.get(y+1, x).getSymbol() == Wall.SYMBOL) {
-                    _direction = EPacmanDirection.NONE;
-                } else {
+                if (colision(y + 1, x))
                     y++;
-                }
             }
             case LEFT -> {
-                if (_maze.get(y, x-1).getSymbol() == Wall.SYMBOL) {
-                    _direction = EPacmanDirection.NONE;
-                } else {
+                if (colision(y, x - 1))
                     x--;
-                }
             }
             case RIGHT -> {
-                if (_maze.get(y, x+1).getSymbol() == Wall.SYMBOL) {
-                    _direction = EPacmanDirection.NONE;
-                } else {
+                if (colision(y, x + 1))
                     x++;
-                }
             }
         }
 
         _maze.set(y, x, this);
     }
 
+    private boolean colision(int y, int x) {
+        IMazeElement element = _maze.get(y, x);
+
+        if (element == null) return true;
+
+        switch (element.getSymbol()) {
+            case Wall.SYMBOL, GhostCaseDoor.SYMBOL -> {
+                _direction = EDirection.NONE;
+                return false;
+            }
+
+            case Blinky.SYMBOL, Pinky.SYMBOL, Inky.SYMBOL, Clyde.SYMBOL -> {
+                /*if (PowerUpState) {
+                    _points += 100;
+                }
+                else {*/
+                    _vidas++;
+                    return false;
+                //}
+            }
+
+            case Fruit.SYMBOL -> {
+                Fruit fruit = (Fruit) _maze.get(y, x);
+
+                if (fruit.withFruit())
+                    _points += 20;
+                else
+                    _overElement = _maze.get(y, x);
+            }
+
+            case PacDot.RENDER -> _points += 5;
+
+            case PacPill.RENDER -> {
+                _powerUpOn = true;
+                _points += 10;
+            }
+
+            case Warp.SYMBOL -> {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public char getSymbol() { return SYMBOL; }
     public int getVidas() { return _vidas; }
-    public EPacmanDirection getDirection() { return _direction; }
+    public EDirection getDirection() { return _direction; }
+    public int getPoints() { return _points; }
+    public boolean getOnPowerUp() { return _powerUpOn; }
 
-    public void setDirection(EPacmanDirection dir) { _direction = dir; }
+    public void setVidas (int vidas) { _vidas = vidas; }
+    public void setDirection(EDirection dir) { _direction = dir; }
+    public void setPoints(int points) { _points = points; }
+    public void setPowerUp() { _powerUpOn = true; }
 }

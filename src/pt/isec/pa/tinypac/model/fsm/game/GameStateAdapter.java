@@ -17,10 +17,7 @@ abstract class GameStateAdapter implements IGameState {
     protected void changeState(EGameState newState) { _context.changeState(newState.createState(_context, _data)); }
 
     @Override
-    public void pressKey(KeyType key) {}
-
-    @Override
-    public void pressKey(KeyCode key) {}
+    public void pressKey() {}
 
     @Override
     public void evolve() {}

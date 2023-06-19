@@ -13,30 +13,27 @@ import com.googlecode.lanterna.TerminalSize;
 
 //  import tinypac package
 import pt.isec.pa.tinypac.Main;
-import pt.isec.pa.tinypac.gameengine.GameEngine;
 import pt.isec.pa.tinypac.gameengine.IGameEngine;
 import pt.isec.pa.tinypac.gameengine.IGameEngineEvolve;
 import pt.isec.pa.tinypac.model.GameManager;
+import pt.isec.pa.tinypac.model.data.EDirection;
 import pt.isec.pa.tinypac.model.data.maze.item.*;
 import pt.isec.pa.tinypac.model.data.player.*;
 import pt.isec.pa.tinypac.model.data.ghost.*;
 import pt.isec.pa.tinypac.model.fsm.game.EGameState;
+import pt.isec.pa.tinypac.model.fsm.ghost.EGhostState;
 
 import java.io.IOException;
 
 public class TinyPAcTUI implements IGameEngineEvolve {
     private final GameManager _gameManager;
-    //private GameEngine _gameEngine = new GameEngine();
     private final Terminal _terminal;
     private final Screen _screen;
     private final int _terminalCenterCollumn;
     private boolean _debugOn;
 
-
     public TinyPAcTUI() throws IOException {
         _gameManager = Main.gameManager;
-
-        //_gameEngine.registerClient(_gameManager);
 
         _terminal = new DefaultTerminalFactory()
                 .setInitialTerminalSize(new TerminalSize(100, 45))
@@ -50,32 +47,26 @@ public class TinyPAcTUI implements IGameEngineEvolve {
     //TODO: envolve para mostrar o tabuleiro em tempo real
     @Override
     public void evolve(IGameEngine gameEngine, long currentTime) {
-        /*if(_fsm == null)
-            return;
-        if(!_maze.evolve())
-            gameEngine.stop();
-
-        showBoard();
-        if (_debugOn) showDebug();*/
         try {
-            if (_gameManager.getMazeContext() == null)
+            if (_gameManager.getMazeContext() == null)  {
+                gameEngine.stop();
+                showMenu(gameEngine);
                 return;
+            }
 
             if (_gameManager.getMazeState() == EGameState.INIT_GAME_STATE ) {
                 gameEngine.stop();
-                //PLACE_HOLDER
-                //showMenu();
                 showMenu(gameEngine);
                 return;
             }
 
             showBoard();
+            showInfo();
             if (_debugOn) showDebug();
 
         } catch (IOException e) { }
     }
 
-    //public void showMenu() throws IOException {
     public void showMenu(IGameEngine gameEngine) throws IOException {
         int y;
         _screen.startScreen();
@@ -169,9 +160,7 @@ public class TinyPAcTUI implements IGameEngineEvolve {
         _terminal.clearScreen();
         _screen.clear();
 
-        //TODO: reset do state
-        _gameManager.resetFSM();
-        _gameManager.setDirection(EPacmanDirection.NONE);
+        _gameManager.initGame();
 
         //TODO: janela do jogo
         Game: while (true) {
@@ -180,24 +169,21 @@ public class TinyPAcTUI implements IGameEngineEvolve {
                     _gameManager.loadLevel();
 
                     showBoard();
-
+                    showInfo();
                     if (_debugOn) showDebug();
 
-                    //TODO: por isto no terminal em vez na consola do IDE
-                    System.out.println("Carrega numa das setas para começar o jogo");
                     input = _screen.readInput();
                     keyPress : while (true) {
                         switch (input.getKeyType()) {
-                            //TODO: verficar esta parte
                             case ArrowUp, ArrowDown, ArrowRight, ArrowLeft -> {
                                 gameEngine.start(200);
-                                _gameManager.startGame(input.getKeyType());
+                                _gameManager.startGame();
 
                                 switch (input.getKeyType()) {
-                                    case ArrowUp ->  _gameManager.setDirection(EPacmanDirection.UP);
-                                    case ArrowDown -> _gameManager.setDirection(EPacmanDirection.DOWN);
-                                    case ArrowRight -> _gameManager.setDirection(EPacmanDirection.RIGHT);
-                                    case ArrowLeft -> _gameManager.setDirection(EPacmanDirection.LEFT);
+                                    case ArrowUp ->  _gameManager.setDirection(EDirection.UP);
+                                    case ArrowDown -> _gameManager.setDirection(EDirection.DOWN);
+                                    case ArrowRight -> _gameManager.setDirection(EDirection.RIGHT);
+                                    case ArrowLeft -> _gameManager.setDirection(EDirection.LEFT);
                                 }
                                 break keyPress;
                             }
@@ -216,22 +202,22 @@ public class TinyPAcTUI implements IGameEngineEvolve {
                     keyPress : while (true) {
                         switch (input.getKeyType()) {
                             case ArrowUp -> {
-                                _gameManager.setDirection(EPacmanDirection.UP);
+                                _gameManager.setDirection(EDirection.UP);
                                 break keyPress;
                             }
 
                             case ArrowDown -> {
-                                _gameManager.setDirection(EPacmanDirection.DOWN);
+                                _gameManager.setDirection(EDirection.DOWN);
                                 break keyPress;
                             }
 
                             case ArrowRight -> {
-                                _gameManager.setDirection(EPacmanDirection.RIGHT);
+                                _gameManager.setDirection(EDirection.RIGHT);
                                 break keyPress;
                             }
 
                             case ArrowLeft -> {
-                                _gameManager.setDirection(EPacmanDirection.LEFT);
+                                _gameManager.setDirection(EDirection.LEFT);
                                 break keyPress;
                             }
 
@@ -248,18 +234,18 @@ public class TinyPAcTUI implements IGameEngineEvolve {
 
                 //TODO: verificar esta parte
                 case PAUSE_STATE -> {
+                    gameEngine.pause();
                     _gameManager.pauseGame();
-                    //_gameEngine.pause();
 
                     input = _screen.readInput();
                     switch (input.getKeyType()) {
                         //TODO: verificar esta parte
                         case Escape -> {
-                            //_gameManager.resume();
+                            gameEngine.resume();
+                            _gameManager.resumeGame();
                         }
 
                         case Enter -> {
-                            _gameManager.setDirection(EPacmanDirection.NONE);
                             break Game;
                         }
                     }
@@ -267,7 +253,7 @@ public class TinyPAcTUI implements IGameEngineEvolve {
 
                 //TODO: verficar esta parte
                 case POWER_UP_STATE -> {
-                    //_gameEngine.setInterval(5000);
+                    gameEngine.setInterval(5000);
                 }
 
                 case END_GAME_STATE -> {
@@ -276,10 +262,6 @@ public class TinyPAcTUI implements IGameEngineEvolve {
                     break Game;
                 }
             }
-
-            //PLACE_HOLDER (evolve)
-            showBoard();
-            if (_debugOn) showDebug();
         }
     }
 
@@ -292,7 +274,7 @@ public class TinyPAcTUI implements IGameEngineEvolve {
         int y = 35;
         _terminal.setBackgroundColor(TextColor.ANSI.BLACK);
         _terminal.setForegroundColor(TextColor.ANSI.GREEN);
-        EPacmanDirection dir = _gameManager.getDirection();
+        EDirection dir = _gameManager.getDirection();
         String dirStr = null;
 
         if (dir != null) {
@@ -320,6 +302,20 @@ public class TinyPAcTUI implements IGameEngineEvolve {
         _terminal.flush();
     }
 
+    private void showInfo() throws IOException {
+        _terminal.setBackgroundColor(TextColor.ANSI.BLACK);
+        _terminal.setForegroundColor(TextColor.ANSI.WHITE);
+
+        _terminal.setCursorPosition(5, 0);
+        _terminal.putString(String.format("Points: %d", _gameManager.getPoints()));
+
+        _terminal.setCursorPosition(20, 0);
+        _terminal.putString(String.format("Vidas: %d", _gameManager.getVidas()));
+
+        _terminal.setCursorVisible(false);
+        _terminal.flush();
+    }
+
     private void showBoard() throws IOException {
         char[][] mazeChars = _gameManager.getMaze();
 
@@ -331,21 +327,41 @@ public class TinyPAcTUI implements IGameEngineEvolve {
                     case Warp.SYMBOL -> TextColor.ANSI.WHITE;
                     case Wall.SYMBOL -> TextColor.ANSI.BLUE;
                     case GhostCaseDoor.SYMBOL -> TextColor.ANSI.WHITE_BRIGHT;
-                    case Blinky.SYMBOL -> TextColor.ANSI.RED_BRIGHT;
-                    case Pinky.SYMBOL -> TextColor.ANSI.MAGENTA_BRIGHT;
-                    case Inky.SYMBOL -> TextColor.ANSI.BLUE_BRIGHT;
-                    case Clyde.SYMBOL -> TextColor.ANSI.YELLOW;
+
+                    case Blinky.SYMBOL -> {
+                        if (_gameManager.getBlinkyState() == EGhostState.VULNERABLE_STATE)
+                            yield TextColor.ANSI.BLUE;
+                        else
+                            yield TextColor.ANSI.RED_BRIGHT;
+                    }
+
+                    case Pinky.SYMBOL -> {
+                        if (_gameManager.getPinkyState() == EGhostState.VULNERABLE_STATE)
+                            yield TextColor.ANSI.BLUE;
+                        else
+                            yield TextColor.ANSI.MAGENTA_BRIGHT;
+                    }
+
+                    case Inky.SYMBOL -> {
+                        if (_gameManager.getInkyState() == EGhostState.VULNERABLE_STATE)
+                            yield TextColor.ANSI.BLUE;
+                        else
+                            yield TextColor.ANSI.BLUE_BRIGHT;
+                    }
+
+                    case Clyde.SYMBOL -> {
+                        if (_gameManager.getClydeState() == EGhostState.VULNERABLE_STATE)
+                            yield TextColor.ANSI.BLUE;
+                        else
+                            yield TextColor.ANSI.YELLOW;
+                    }
+
                     default -> TextColor.ANSI.BLACK;
                 };
 
                 TextColor bc = switch(mazeChars[y][x]) {
-                    case Wall.SYMBOL -> TextColor.ANSI.BLUE;
-                    case GhostCaseDoor.SYMBOL -> TextColor.ANSI.WHITE_BRIGHT;
+                    case Wall.SYMBOL, GhostCaseDoor.SYMBOL, Blinky.SYMBOL, Pinky.SYMBOL, Inky.SYMBOL, Clyde.SYMBOL -> tc;
                     case Pacman.SYMBOL -> TextColor.ANSI.YELLOW_BRIGHT;
-                    case Blinky.SYMBOL -> TextColor.ANSI.RED_BRIGHT;
-                    case Pinky.SYMBOL -> TextColor.ANSI.MAGENTA_BRIGHT;
-                    case Inky.SYMBOL -> TextColor.ANSI.BLUE_BRIGHT;
-                    case Clyde.SYMBOL -> TextColor.ANSI.YELLOW;
                     default -> TextColor.ANSI.BLACK;
                 };
 

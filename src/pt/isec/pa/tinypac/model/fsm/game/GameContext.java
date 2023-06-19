@@ -1,13 +1,9 @@
 package pt.isec.pa.tinypac.model.fsm.game;
 
-import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import javafx.scene.input.KeyCode;
-import pt.isec.pa.tinypac.gameengine.IGameEngine;
-import pt.isec.pa.tinypac.gameengine.IGameEngineEvolve;
 import pt.isec.pa.tinypac.model.data.GameData;
-import pt.isec.pa.tinypac.model.data.maze.Maze;
-import pt.isec.pa.tinypac.model.data.player.EPacmanDirection;
+import pt.isec.pa.tinypac.model.data.EDirection;
 import pt.isec.pa.tinypac.model.fsm.ghost.EGhostState;
 import pt.isec.pa.tinypac.model.fsm.ghost.GhostContext;
 
@@ -21,7 +17,6 @@ public class GameContext {
     private GhostContext _fsmPinky;
     private GhostContext _fsmInky;
     private GhostContext _fsmClyde;
-    //private GameEngine _gameEngine;
 
     public GameContext() {
         //TODO: check parametrus de entrada da criação do objeto
@@ -36,36 +31,50 @@ public class GameContext {
 
     //TODO: verificar este evolve (este é o evolve do gameEngine)
     /*public void evolve() {
-        _data.moveElements();
+        _data.movePacman();
     }*/
 
-    public void resetFSM() { _state = EGameState.INIT_GAME_STATE.createState(this, _data); }
     public void loadLevel() { _data.loadLevel(); }
-
     public void changeState(IGameState newState) { _state = newState; }
 
     //TODO: check as funçoes de transições
-    public void pressKey(KeyType key) { _state.pressKey(key); } //Lanterna
-    public void pressKey(KeyCode key) { _state.pressKey(key); } //JavaFX
-    public void evolve() { _state.evolve(); }
+    public void pressKey() { _state.pressKey(); }
+    public void evolve() {
+        _state.evolve();
+        _fsmBlinky.evolve();
+        _fsmPinky.evolve();
+        _fsmInky.evolve();
+        _fsmClyde.evolve();
+    }
     public void pause() { _state.pause(); }
     public void resume() { _state.resume(); }
     public void save() { _state.save(); }
     public void quit() { _state.quit(); }
 
+    // Gets do Gamedata
     public GameData getGameData() { return _data; }
+    public int getVidas() { return _data.getVidas(); }
+    public EDirection getDirection() { return _data.getDirection(); }
+    public char[][] getMaze() { return _data.getMaze(); }
+    public int getMazeWidth() { return _data.getMazeWidth(); }
+    public int getMazeHeight() { return _data.getMazeHeight(); }
+    public int getNumLevel() { return _data.getNumLevel(); }
+    public int getPoints() { return _data.getPoints(); }
+    public boolean getOnPowerUp() { return _data.getOnPowerUp(); }
+
+    // Get do IGameState
     public EGameState getState() {
         if (_state == null)
             return null;
         return  _state.getState();
     }
-    public char[][] getMaze() { return _data.getMaze(); }
-    public int getNumLevel() { return _data.getNumLevel(); }
+
+    // Gets dos GhostContext's
     public EGhostState getBlinkyState() { return _fsmBlinky.getState(); }
     public EGhostState getPinkyState() { return _fsmPinky.getState(); }
     public EGhostState getInkyState() { return _fsmInky.getState(); }
     public EGhostState getClydeState() { return _fsmClyde.getState(); }
-    public EPacmanDirection getDirection() { return _data.getDirection(); }
 
-    public void setDirection(EPacmanDirection dir) { _data.setDirection(dir); }
+    // Set do GameData
+    public void setDirection(EDirection dir) { _data.setDirection(dir); }
 }

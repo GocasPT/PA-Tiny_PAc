@@ -1,21 +1,13 @@
 package pt.isec.pa.tinypac.model.fsm.game;
 
 import com.googlecode.lanterna.input.KeyType;
-import javafx.scene.input.KeyCode;
 import pt.isec.pa.tinypac.model.data.GameData;
 
 public class PlayingState extends GameStateAdapter {
     public PlayingState(GameContext context, GameData data){ super(context, data); }
 
     @Override
-    public void pressKey(KeyType key) {
-
-    }
-
-    @Override
-    public void pressKey(KeyCode key) {
-
-    }
+    public void pressKey() {}
 
     @Override
     public void pause() {
@@ -24,7 +16,15 @@ public class PlayingState extends GameStateAdapter {
 
     @Override
     public void evolve() {
-        _context.getGameData().moveElements();
+        _context.getGameData().movePacman();
+
+        if (_context.getOnPowerUp())
+            changeState(EGameState.POWER_UP_STATE);
+
+
+
+        if (_context.getVidas() < 1)
+            changeState(EGameState.END_GAME_STATE);
     }
 
     @Override
