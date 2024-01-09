@@ -11,7 +11,7 @@ Nota: 35%
 Funções em falta:
 - Movimento dos fantasmas
 - Maquina e estados completa
-- Funcionalidades dp jogo
+- Funcionalidades do jogo
 - JavaFX
 - JavaUnit
 - JavaDocs
